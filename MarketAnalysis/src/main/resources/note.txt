@@ -30,3 +30,14 @@ process function使用方式最灵活，理论上所有的需求都可以用proc
 
 6. 关于onTimer
 onTimer: 定时器触发，其实就是一个事件驱动的操作，这个事件就是时间的推移，就是watermark的到来
+
+7. 对于统计类指标，最常用的方式，就是开窗后用aggregate做增量聚合
+aggregate得到的结果，还可以进一步以window为key分组，再做聚合或者计算
+还可以用flink SQL实现
+
+8. 对于风控类或者流程控制类指标，最常用的方法，可以用process function，结合状态编程和定时器操作实现
+也可以用CEP来简单实现，一般情况，能用CEP都会优先用
+
+9. 用CEP做流程控制时，要根据具体业务需求，确定模式序列到底是严格近邻还是宽松近邻
+pattern API得到的PatternStream，类似于对于原DataStream做了一个filter操作，提取出的是满足pattern要求的复杂事件
+处理提取出的事件，要调用select方法，传入PatternSelectFunction，事件保存在一个map结构里
